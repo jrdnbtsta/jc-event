@@ -14,10 +14,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.conf.urls import url
 from eventapi.views import AnnouncementApi
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('announcements/', AnnouncementApi.as_view())
+    url('admin/', admin.site.urls),
+    url(r'^announcements/(?P<announcement_id>[0-9]+)[/]$', AnnouncementApi.as_view()),
+    url(r'^announcements[/]$', AnnouncementApi.as_view()),
 ]

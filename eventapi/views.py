@@ -9,20 +9,32 @@ from eventapi.models import *
 
 class AnnouncementApi(View):
 
-    def get(self, request):
+    def get(self, request, announcement_id=None):
         try:
-            query = Announcement.objects.all()
-            formatted = []
-            for a in query:
-                formatted.append({
-                    "created": a.created,
-                    "due_date": a.due_date,
-                    "content": a.content,
-                    "url": a.url
-                })
+            if announcement_id:
+                query = Announcement.objects.filter(id=announcement_id).first()
+                formatted = {
+                    "id": query.id,
+                    "created": query.created,
+                    "due_date": query.due_date,
+                    "content": query.content,
+                    "url": query.url
+                }
+
+            else:
+                query = Announcement.objects.all()
+                formatted = []
+                for a in query:
+                    formatted.append({
+                        "id": a.id,
+                        "created": a.created,
+                        "due_date": a.due_date,
+                        "content": a.content,
+                        "url": a.url
+                    })
 
             content = {
-                "announcements": formatted,
+                "content": formatted,
                 "message": "Received Announcements",
                 "status": 200
             }
@@ -33,4 +45,4 @@ class AnnouncementApi(View):
             status = 400
             content = e
 
-        return HttpResponse(content=json.dumps(content, default=str), status=status)
+        return HttpResponse(content=json.dumps(content, default=str), status=status, content_type='application/json')
